@@ -1,0 +1,24 @@
+---
+- name: Configurar servidores web
+  hosts: web
+  become: yes
+  tasks:
+    - name: Asegurarse de que Apache esté instalado
+      apt:
+        name: apache2
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Asegurarse de que el servicio Apache esté habilitado y en ejecución
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Asegurarse de que se pueda acceder al servidor web
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+      when: ansible_os_family == "Debian"
